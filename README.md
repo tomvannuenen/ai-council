@@ -12,14 +12,6 @@ A powerful web application for comparing responses from multiple AI models side-
 - **🔒 Secure** - API keys stored locally, never exposed in code
 - **💻 CLI Available** - Also includes a command-line interface
 
-## 🚀 Latest Models Supported
-
-The app dynamically fetches the newest models from each provider:
-
-- **Claude**: Claude 4, Claude 3.7 Sonnet, Claude 3.5 Sonnet/Haiku
-- **OpenAI**: GPT-4.1, GPT-4.5, GPT-4o, GPT-4 Turbo variants
-- **Gemini**: Gemini 2.5 Flash/Pro, Gemini 2.0 Flash, Gemini 1.5 Pro/Flash
-
 ## 📋 Prerequisites
 
 - Node.js (v16 or higher)
