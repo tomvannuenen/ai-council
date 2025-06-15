@@ -2,8 +2,6 @@
 
 A powerful web application for comparing responses from multiple AI models side-by-side. Get insights from Claude, OpenAI GPT, and Google Gemini all at once, with an integrated summary that highlights key differences and similarities.
 
-![AI Council Screenshot](https://via.placeholder.com/800x400/667eea/ffffff?text=AI+Council+Screenshot)
-
 ## ✨ Features
 
 - **🔄 Dynamic Model Selection** - Automatically fetches the latest available models from all providers
