@@ -13,7 +13,7 @@ function getApiKeys() {
   try {
     const zshrc = execSync('cat ~/.zshrc', { encoding: 'utf8' });
     
-    const anthropicMatch = zshrc.match(/export ANTHROPIC_API_KEY="?([^"\n]+)"?/);
+    const anthropicMatch = zshrc.match(/export CLAUDE_API_KEY="?([^"\n]+)"?/);
     const openaiMatch = zshrc.match(/export OPENAI_API_KEY="?([^"\n]+)"?/);
     const geminiMatch = zshrc.match(/export GEMINI_API_KEY="?([^"\n]+)"?/);
     
@@ -36,7 +36,7 @@ async function selectModels(apiKeys) {
   if (apiKeys.gemini) availableProviders.push('gemini');
   
   if (availableProviders.length === 0) {
-    console.error(chalk.red('No API keys found in .zshrc. Please add ANTHROPIC_API_KEY, OPENAI_API_KEY, and/or GEMINI_API_KEY'));
+    console.error(chalk.red('No API keys found in .zshrc. Please add CLAUDE_API_KEY, OPENAI_API_KEY, and/or GEMINI_API_KEY'));
     return {};
   }
 

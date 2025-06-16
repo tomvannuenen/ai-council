@@ -1,13 +1,17 @@
 class AICouncil {
     constructor() {
         this.availableModels = {};
+        this.chatHistory = [];
+        this.currentChatId = null;
         this.init();
     }
 
     async init() {
         await this.loadAvailableModels();
+        this.loadChatHistory();
         this.setupEventListeners();
         this.renderModelSelection();
+        this.renderHistory();
     }
 
     async loadAvailableModels() {
@@ -23,12 +27,22 @@ class AICouncil {
     setupEventListeners() {
         const askBtn = document.getElementById('askBtn');
         const questionInput = document.getElementById('questionInput');
+        const clearHistoryBtn = document.getElementById('clearHistory');
 
         askBtn.addEventListener('click', () => this.askQuestion());
         
         questionInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                 this.askQuestion();
+            }
+        });
+
+        clearHistoryBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all chat history?')) {
+                this.chatHistory = [];
+                this.currentChatId = null;
+                this.saveChatHistory();
+                this.renderHistory();
             }
         });
     }
@@ -52,7 +66,12 @@ class AICouncil {
             const providerDiv = document.createElement('div');
             providerDiv.className = 'model-group';
             
-            const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
+            const providerNames = {
+                'claude': 'Anthropic',
+                'openai': 'OpenAI', 
+                'gemini': 'Google'
+            };
+            const providerName = providerNames[provider] || provider.charAt(0).toUpperCase() + provider.slice(1);
             
             providerDiv.innerHTML = `
                 <h3>${providerName} (${models.length} models available)</h3>
@@ -132,12 +151,99 @@ class AICouncil {
             }
 
             this.displayResults(data.results, data.summary, question);
+            this.saveCurrentChat(question, data.results, data.summary);
 
         } catch (error) {
             this.showError(error.message);
         } finally {
             this.showLoading(false);
         }
+    }
+
+    renderMarkdown(text) {
+        if (!text) return text;
+        try {
+            return marked.parse(text);
+        } catch (error) {
+            console.error('Markdown parsing error:', error);
+            return this.escapeHtml(text);
+        }
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    loadChatHistory() {
+        const saved = localStorage.getItem('aiCouncilHistory');
+        if (saved) {
+            this.chatHistory = JSON.parse(saved);
+        }
+    }
+
+    saveChatHistory() {
+        localStorage.setItem('aiCouncilHistory', JSON.stringify(this.chatHistory));
+    }
+
+    generateChatId() {
+        return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    }
+
+    renderHistory() {
+        const historyList = document.getElementById('historyList');
+        
+        if (this.chatHistory.length === 0) {
+            historyList.innerHTML = '<div class="history-item" style="text-align: center; color: #666; font-style: italic;">No previous conversations</div>';
+            return;
+        }
+
+        historyList.innerHTML = this.chatHistory
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .map(chat => `
+                <div class="history-item ${chat.id === this.currentChatId ? 'active' : ''}" 
+                     onclick="aiCouncil.loadChat('${chat.id}')">
+                    <div class="history-question">${this.truncateText(chat.question, 60)}</div>
+                    <div class="history-date">${new Date(chat.timestamp).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+    }
+
+    truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        return text.substr(0, maxLength) + '...';
+    }
+
+    loadChat(chatId) {
+        const chat = this.chatHistory.find(c => c.id === chatId);
+        if (!chat) return;
+
+        this.currentChatId = chatId;
+        document.getElementById('questionInput').value = chat.question;
+        this.displayResults(chat.results, chat.summary, chat.question);
+        this.renderHistory();
+    }
+
+    saveCurrentChat(question, results, summary) {
+        const chatId = this.generateChatId();
+        const chat = {
+            id: chatId,
+            question,
+            results,
+            summary,
+            timestamp: new Date().toISOString()
+        };
+
+        this.chatHistory.unshift(chat);
+        // Keep only last 50 chats
+        if (this.chatHistory.length > 50) {
+            this.chatHistory = this.chatHistory.slice(0, 50);
+        }
+        
+        this.currentChatId = chatId;
+        this.saveChatHistory();
+        this.renderHistory();
     }
 
     displayResults(results, summary, question) {
@@ -147,9 +253,9 @@ class AICouncil {
         // Add question header
         const questionHeader = document.createElement('div');
         questionHeader.innerHTML = `
-            <h2 style="color: #333; margin-bottom: 25px; text-align: center; font-size: 1.5em;">
-                Results for: "${question}"
-            </h2>
+            <div style="color: #666; margin-bottom: 25px; text-align: center; font-size: 1.1em; font-weight: 500;">
+                Results for: <em>"${this.escapeHtml(question)}"</em>
+            </div>
         `;
         resultsContainer.appendChild(questionHeader);
 
@@ -160,7 +266,7 @@ class AICouncil {
             
             const content = result.error 
                 ? `<span class="error">❌ Error: ${result.error}</span>`
-                : result.response;
+                : this.renderMarkdown(result.response);
             
             resultCard.innerHTML = `
                 <div class="result-header">${result.model}</div>
@@ -177,7 +283,7 @@ class AICouncil {
             
             summaryCard.innerHTML = `
                 <div class="result-header summary-header">📋 Integrated Summary</div>
-                <div class="result-content">${summary}</div>
+                <div class="result-content">${this.renderMarkdown(summary)}</div>
             `;
             
             resultsContainer.appendChild(summaryCard);
@@ -214,6 +320,7 @@ class AICouncil {
 }
 
 // Initialize the app when the page loads
+let aiCouncil;
 document.addEventListener('DOMContentLoaded', () => {
-    new AICouncil();
+    aiCouncil = new AICouncil();
 });

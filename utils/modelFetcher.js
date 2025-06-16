@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 export class ModelFetcher {
   static async fetchClaudeModels(apiKey) {
@@ -43,10 +43,15 @@ export class ModelFetcher {
       const client = new OpenAI({ apiKey });
       const response = await client.models.list();
       
-      // Filter for chat completion models and sort by newest first
+      // Debug: Log all available models
+      console.log('Available OpenAI models from API:', response.data.map(m => ({
+        id: m.id,
+        created: m.created
+      })));
+      
+      // Filter for chat completion models by excluding non-chat models
       const chatModels = response.data
         .filter(model => 
-          model.id.includes('gpt') && 
           !model.id.includes('instruct') && 
           !model.id.includes('edit') &&
           !model.id.includes('embedding') &&
@@ -55,7 +60,11 @@ export class ModelFetcher {
           !model.id.includes('dall-e') &&
           !model.id.includes('davinci') &&
           !model.id.includes('babbage') &&
-          !model.id.includes('ada')
+          !model.id.includes('ada') &&
+          !model.id.includes('search') &&
+          !model.id.includes('similarity') &&
+          !model.id.includes('code-search') &&
+          !model.id.includes('text-search')
         )
         .map(model => ({
           id: model.id,
@@ -77,12 +86,12 @@ export class ModelFetcher {
 
   static async fetchGeminiModels(apiKey) {
     try {
-      // Try the newer v1 endpoint first
-      let response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
+      // Try the v1beta endpoint first as it has more models including 2.5
+      let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
       
-      // If v1 fails, try v1beta
+      // If v1beta fails, try v1
       if (!response.ok) {
-        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+        response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
       }
       
       if (!response.ok) {
@@ -95,12 +104,19 @@ export class ModelFetcher {
         throw new Error('No models returned from API');
       }
       
+      // Debug: Log all available models
+      console.log('Available Gemini models from API:', data.models.map(m => ({
+        name: m.name,
+        displayName: m.displayName,
+        supportedMethods: m.supportedGenerationMethods
+      })));
+      
       // Filter for generative models that support generateContent
       const generativeModels = data.models
         .filter(model => 
           model.supportedGenerationMethods?.includes('generateContent') &&
-          !model.name.includes('embedding') &&
-          !model.name.includes('vision') // These require special handling
+          !model.name.includes('embedding')
+          // Removed vision filter to include Gemini 2.5 models which have vision capabilities
         )
         .map(model => ({
           id: model.name.replace('models/', ''),
@@ -131,24 +147,45 @@ export class ModelFetcher {
 
   static formatClaudeModelName(modelId) {
     return modelId
-      .replace(/claude-/, 'Claude ')
+      .replace(/claude-/, 'Anthropic Claude ')
       .replace(/-/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase());
   }
 
   static formatOpenAIModelName(modelId) {
-    return modelId
-      .replace(/^gpt-/, 'GPT-')
-      .replace(/turbo/i, 'Turbo')
-      .replace(/preview/i, 'Preview')
-      .replace(/instruct/i, 'Instruct')
-      .replace(/-/g, ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
+    // Handle different model prefixes dynamically
+    if (modelId.startsWith('gpt-')) {
+      return modelId
+        .replace(/^gpt-/, 'OpenAI GPT-')
+        .replace(/turbo/i, 'Turbo')
+        .replace(/preview/i, 'Preview')
+        .replace(/instruct/i, 'Instruct')
+        .replace(/mini/i, 'Mini')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+    } else if (modelId.match(/^o\d+/)) {
+      // Handle reasoning models (o1, o3, o4, etc.)
+      return modelId
+        .replace(/^(o\d+)-?/, 'OpenAI $1 ')
+        .replace(/preview/i, 'Preview')
+        .replace(/mini/i, 'Mini')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase())
+        .trim();
+    } else {
+      // Default formatting for any other OpenAI models
+      return 'OpenAI ' + modelId
+        .replace(/turbo/i, 'Turbo')
+        .replace(/preview/i, 'Preview')
+        .replace(/mini/i, 'Mini')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+    }
   }
 
   static formatGeminiModelName(modelId) {
     return modelId
-      .replace(/^gemini-/, 'Gemini ')
+      .replace(/^gemini-/, 'Google Gemini ')
       .replace(/pro/i, 'Pro')
       .replace(/flash/i, 'Flash')
       .replace(/ultra/i, 'Ultra')

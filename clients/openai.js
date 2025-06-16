@@ -10,7 +10,11 @@ export class OpenAIClient {
 
   async query(prompt) {
     try {
-      const response = await this.client.chat.completions.create({
+      // Use max_completion_tokens for reasoning models (o1, o3, etc.), max_tokens for others
+      const isReasoningModel = this.modelConfig.id.match(/^o\d+/);
+      const tokenParam = isReasoningModel ? 'max_completion_tokens' : 'max_tokens';
+      
+      const requestParams = {
         model: this.modelConfig.id,
         messages: [
           {
@@ -18,8 +22,10 @@ export class OpenAIClient {
             content: prompt
           }
         ],
-        max_tokens: 1000,
-      });
+        [tokenParam]: 1000,
+      };
+      
+      const response = await this.client.chat.completions.create(requestParams);
       
       return {
         model: this.modelConfig.name,

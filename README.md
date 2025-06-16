@@ -1,6 +1,6 @@
 # 🤖 AI Council
 
-A powerful web application for comparing responses from multiple AI models side-by-side. Get insights from Claude, OpenAI GPT, and Google Gemini all at once, with an integrated summary that highlights key differences and similarities.
+A powerful web application for comparing responses from multiple AI models side-by-side. Get insights from Anthropic, Google, and OpenAI all at once, with an integrated summary that highlights key differences and similarities.
 
 ## ✨ Features
 
@@ -16,9 +16,9 @@ A powerful web application for comparing responses from multiple AI models side-
 
 - Node.js (v16 or higher)
 - API keys for the providers you want to use:
-  - [Claude API Key](https://console.anthropic.com/)
+  - [Anthropic API Key](https://console.anthropic.com/)
   - [OpenAI API Key](https://platform.openai.com/api-keys)
-  - [Gemini API Key](https://makersuite.google.com/app/apikey)
+  - [Google API Key](https://makersuite.google.com/app/apikey)
 
 ## 🛠️ Installation
 
@@ -35,9 +35,9 @@ A powerful web application for comparing responses from multiple AI models side-
 
 3. **Set up API keys in your `.zshrc` file**
    ```bash
-   echo 'export CLAUDE_API_KEY="your-claude-api-key"' >> ~/.zshrc
+   echo 'export CLAUDE_API_KEY="your-anthropic-api-key"' >> ~/.zshrc
    echo 'export OPENAI_API_KEY="your-openai-api-key"' >> ~/.zshrc
-   echo 'export GEMINI_API_KEY="your-gemini-api-key"' >> ~/.zshrc
+   echo 'export GEMINI_API_KEY="your-google-api-key"' >> ~/.zshrc
    source ~/.zshrc
    ```
 
@@ -85,7 +85,7 @@ npm run cli ask "What's the best programming language to learn in 2024?" --summa
 ai-council/
 ├── clients/           # API client classes for each provider
 │   ├── claude.js      # Anthropic Claude client
-│   ├── openai.js      # OpenAI GPT client
+│   ├── openai.js      # OpenAI client
 │   └── gemini.js      # Google Gemini client
 ├── utils/             # Utility functions
 │   └── modelFetcher.js # Dynamic model fetching logic
@@ -104,8 +104,8 @@ ai-council/
 The app reads API keys from your shell environment. Supported variable names:
 
 - `CLAUDE_API_KEY` or `ANTHROPIC_API_KEY`
-- `OPENAI_API_KEY`
-- `GEMINI_API_KEY`
+- `OPENAI_API_KEY` 
+- `GEMINI_API_KEY` 
 
 ### Model Selection
 

@@ -87,13 +87,12 @@ Here are their responses:
 
 ${validResponses.map((r, i) => `${r.model}:\n${r.response}\n`).join('\n---\n')}
 
-Please provide a concise integrated summary that:
-1. Highlights key similarities and differences between the responses
-2. Identifies the most consistent recommendations or information
-3. Notes any unique insights from specific models
-4. Provides a balanced synthesis of the different perspectives
+Please provide a brief integrated summary (2-3 short paragraphs max) that:
+1. Highlights the key consensus and main differences
+2. Notes any standout insights from specific models
+3. Gives a balanced overview
 
-Keep it concise but informative.`;
+Be concise and focus on the most important points.`;
 
         try {
           const claudeModel = availableModels.claude[0]; // Use first Claude model for summary
