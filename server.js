@@ -112,5 +112,5 @@ Be concise and focus on the most important points.`;
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 AI Council web app running at http://localhost:${PORT}`);
+  console.log(`AI Council web app running at http://localhost:${PORT}`);
 });

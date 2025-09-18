@@ -1,18 +1,18 @@
-# 🤖 AI Council
+# AI Council
 
 A powerful web application for comparing responses from multiple AI models side-by-side. Get insights from Anthropic, Google, and OpenAI all at once, with an integrated summary that highlights key differences and similarities.
 
-## ✨ Features
+## Features
 
-- **🔄 Dynamic Model Selection** - Automatically fetches the latest available models from all providers
-- **📊 Side-by-Side Comparison** - See responses from multiple AI models simultaneously
-- **🧠 Integrated Summary** - AI-powered analysis of differences and similarities between responses
-- **🎨 Beautiful Web Interface** - Clean, modern UI with responsive design
-- **⚡ Fast Performance** - Concurrent API calls for quick results
-- **🔒 Secure** - API keys stored locally, never exposed in code
-- **💻 CLI Available** - Also includes a command-line interface
+- **Dynamic Model Selection** - Automatically fetches the latest available models from all providers
+- **Side-by-Side Comparison** - See responses from multiple AI models simultaneously
+- **Integrated Summary** - AI-powered analysis of differences and similarities between responses
+- **Refined Web Interface** - Clean, modern UI with responsive design
+- **Fast Performance** - Concurrent API calls for quick results
+- **Secure** - API keys stored locally, never exposed in code
+- **CLI Available** - Also includes a command-line interface
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Node.js (v16 or higher)
 - API keys for the providers you want to use:
@@ -20,7 +20,7 @@ A powerful web application for comparing responses from multiple AI models side-
   - [OpenAI API Key](https://platform.openai.com/api-keys)
   - [Google API Key](https://makersuite.google.com/app/apikey)
 
-## 🛠️ Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -43,7 +43,7 @@ A powerful web application for comparing responses from multiple AI models side-
 
    > **Note**: You don't need all three API keys. The app will work with whatever keys you provide.
 
-## 🎯 Usage
+## Usage
 
 ### Web Interface (Recommended)
 
@@ -61,6 +61,8 @@ A powerful web application for comparing responses from multiple AI models side-
    - Toggle "Include integrated summary" if desired
    - Click "Ask AI Council"
 
+> **Security Note**: Keep the site on your own machine alongside the Express backend. Publishing the static files on a public host (e.g. GitHub Pages) forces visitors to paste API keys into their browser, where extensions or injected scripts can read them. For shared deployments, proxy model calls through a trusted server that manages the secrets.
+
 ### Command Line Interface
 
 ```bash
@@ -71,7 +73,7 @@ npm run cli ask "What's the best programming language to learn in 2024?"
 npm run cli ask "What's the best programming language to learn in 2024?" --summary
 ```
 
-## 📖 How It Works
+## How It Works
 
 1. **Dynamic Model Fetching**: The app calls each provider's API to get their latest available models
 2. **Model Selection**: Choose specific models from dropdown menus for each provider
@@ -79,25 +81,25 @@ npm run cli ask "What's the best programming language to learn in 2024?" --summa
 4. **Response Display**: Results are shown side-by-side with clear model identification
 5. **Integrated Summary**: Claude analyzes all responses to provide insights on similarities, differences, and recommendations
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ai-council/
-├── clients/           # API client classes for each provider
-│   ├── claude.js      # Anthropic Claude client
-│   ├── openai.js      # OpenAI client
-│   └── gemini.js      # Google Gemini client
-├── utils/             # Utility functions
-│   └── modelFetcher.js # Dynamic model fetching logic
-├── public/            # Web interface files
-│   ├── index.html     # Main web page
-│   └── app.js         # Frontend JavaScript
-├── server.js          # Express web server
-├── index.js           # CLI interface
-└── package.json       # Dependencies and scripts
+|- clients/            # API client classes for each provider
+|  |- claude.js        # Anthropic Claude client
+|  |- openai.js        # OpenAI client
+|  `- gemini.js        # Google Gemini client
+|- utils/              # Utility functions
+|  `- modelFetcher.js  # Dynamic model fetching logic
+|- public/             # Web interface files
+|  |- index.html       # Main web page
+|  `- app.js           # Frontend JavaScript
+|- server.js           # Express web server
+|- index.js            # CLI interface
+`- package.json        # Dependencies and scripts
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -116,7 +118,7 @@ Models are dynamically fetched from each provider's API, ensuring you always hav
 - Handles API errors gracefully
 - Shows model creation dates
 
-## 🎨 Screenshots
+## Screenshots
 
 ### Web Interface
 - Beautiful gradient design with modern UI
@@ -129,7 +131,7 @@ Models are dynamically fetched from each provider's API, ensuring you always hav
 - Progress indicators during API calls
 - Structured comparison format
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. Areas for improvement:
 
@@ -139,17 +141,17 @@ Contributions are welcome! Please feel free to submit a Pull Request. Areas for 
 - Usage analytics
 - Model performance metrics
 
-## 📄 License
+## License
 
 MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with modern web technologies (Express, vanilla JS)
 - Powered by the latest AI models from Anthropic, OpenAI, and Google
 - Inspired by the need to compare AI responses efficiently
 
-## 📞 Support
+## Support
 
 If you encounter any issues or have questions:
 
@@ -159,6 +161,6 @@ If you encounter any issues or have questions:
 
 ---
 
-**🤖 Generated with [Claude Code](https://claude.ai/code)**
+**Generated with [Claude Code](https://claude.ai/code)**
 
 Co-Authored-By: Claude <noreply@anthropic.com>

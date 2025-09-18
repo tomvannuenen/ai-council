@@ -265,7 +265,7 @@ class AICouncil {
             resultCard.className = 'result-card';
             
             const content = result.error 
-                ? `<span class="error">❌ Error: ${result.error}</span>`
+                ? `<span class="error">Error: ${result.error}</span>`
                 : this.renderMarkdown(result.response);
             
             resultCard.innerHTML = `
@@ -282,7 +282,7 @@ class AICouncil {
             summaryCard.className = 'result-card summary-card';
             
             summaryCard.innerHTML = `
-                <div class="result-header summary-header">📋 Integrated Summary</div>
+                <div class="result-header summary-header">Integrated Summary</div>
                 <div class="result-content">${this.renderMarkdown(summary)}</div>
             `;
             
