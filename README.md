@@ -1,6 +1,6 @@
 # AI Council
 
-A powerful web application for comparing responses from multiple AI models side-by-side. Get insights from Anthropic, Google, and OpenAI all at once, with an integrated summary that highlights key differences and similarities.
+A web application for comparing responses from multiple AI models side-by-side. Get insights from Anthropic, Google, and OpenAI all at once, with an integrated summary that highlights key differences and similarities.
 
 ## Features
 
@@ -158,9 +158,3 @@ If you encounter any issues or have questions:
 1. Check the [Issues](https://github.com/tomvannuenen/ai-council/issues) page
 2. Create a new issue with details about your problem
 3. Include your Node.js version and operating system
-
----
-
-**Generated with [Claude Code](https://claude.ai/code)**
-
-Co-Authored-By: Claude <noreply@anthropic.com>
